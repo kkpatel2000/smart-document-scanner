@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+
+	<title>Sign In</title>
+</head>
+
+<body>
+	<div id="app">
+		<section>
+			<div class="container">
+				<h1 class="title">
+					Create New Account
+				</h1>
+				<h2 class="subtitle">
+					Enter required details below
+				</h2>
+				<div class="field">
+					<label class="label">Username</label>
+					<div class="control has-icons-left has-icons-right">
+						<input class="input" type="text" placeholder="Enter Username" spellcheck="false"
+							v-model="username" v-bind:class="[isErrorUsername ? 'is-danger' : 'is-success']"
+							@input="isErrorUsername = false">
+						<span class="icon is-small is-left">
+							<span class="material-icons">
+								account_circle
+							</span>
+						</span>
+					</div>
+					<p class="help is-success" v-if="isErrorUsername">Username should be greater than 8 characters.</p>
+				</div>
+
+				<div class="field">
+					<label class="label">First Name</label>
+					<div class="control has-icons-left has-icons-right">
+						<input class="input" type="text" placeholder="Enter First Name" spellcheck="false"
+							v-model="firstname" v-bind:class="[isErrorFirstName ? 'is-danger' : 'is-success']"
+							@input="isErrorFirstName = false">
+						<span class="icon is-small is-left">
+							<span class="material-icons">
+								face
+							</span>
+						</span>
+					</div>
+					<p class="help is-success" v-if="isErrorFirstName">First Name should not empty.</p>
+				</div>
+
+				<div class="field">
+					<label class="label">Last Name</label>
+					<div class="control has-icons-left has-icons-right">
+						<input class="input" type="text" placeholder="Enter Last Name" spellcheck="false"
+							v-model="lastname" v-bind:class="[isErrorLastName ? 'is-danger' : 'is-success']"
+							@input="isErrorLastName = false">
+						<span class="icon is-small is-left">
+							<span class="material-icons">
+								face
+							</span>
+						</span>
+					</div>
+					<p class="help is-success" v-if="isErrorLastName">Last Name should not empty.</p>
+				</div>
+
+				<div class="field">
+					<label class="label">E-mail</label>
+					<div class="control has-icons-left has-icons-right">
+						<input class="input" type="email" placeholder="Enter Last Name" spellcheck="false"
+							v-model="email" v-bind:class="[isErrorEmail ? 'is-danger' : 'is-success']"
+							@input="isErrorEmail = false">
+						<span class="icon is-small is-left">
+							<span class="material-icons">
+								email
+							</span>
+						</span>
+					</div>
+					<p class="help is-success" v-if="isErrorEmail">Email should not empty.</p>
+				</div>
+
+				<div class="field">
+					<label class="label">Password</label>
+					<div class="control has-icons-left has-icons-right">
+						<input class="input" type="password" placeholder="Enter Password" v-model="password"
+							v-bind:class="[isErrorPassword ? 'is-danger' : 'is-success']"
+							@input="isErrorPassword = false">
+						<span class="icon is-small is-left">
+							<span class="material-icons">
+								lock
+							</span>
+						</span>
+					</div>
+					<p class="help is-success" v-if="isErrorPassword">Password must contain min 8 characters including
+						one digit, capital alphabet, symbol.</p>
+				</div>
+
+				<div class="field">
+					<label class="label">Confirm Password</label>
+					<div class="control has-icons-left has-icons-right">
+						<input class="input" type="password" placeholder="Enter Confirm Password"
+							v-model="confirmpassword"
+							v-bind:class="[isErrorConfirmPassword ? 'is-danger' : 'is-success']"
+							@input="isErrorConfirmPassword = false">
+						<span class="icon is-small is-left">
+							<span class="material-icons">
+								lock
+							</span>
+						</span>
+					</div>
+					<p class="help is-success" v-if="isErrorConfirmPassword">Password ans Confirm Password should match.
+					</p>
+				</div>
+
+				<div class="buttons">
+					<button class="button is-success" @click="createNewAccount()">
+                        <span class="icon material-icons">
+                            person_add
+                        </span>
+                        <span>Create New Archive</span>
+					</button>
+					<button class="button is-warning" @click="backToLogin()">
+                        <span class="icon material-icons">
+                            keyboard_backspace
+                        </span>
+                        <span>Back to Login</span>
+                    </button>
+				</div>
+
+				<div class="notification is-danger is-light" v-if="isError">
+					<button class="delete" @click='isError = false'></button>
+					{{ '{{' }} errorMessage {{ '}}' }}
+				</div>
+			</div>
+			<br>
+		</section>
+	</div>
+	<script>
+		var app = new Vue({
+			el: '#app',
+			data: {
+				username: '',
+				firstname: '',
+				lastname: '',
+				email: '',
+				password: '',
+				confirmpassword: '',
+				errorMessage: 'Error',
+				isError: false,
+				isErrorUsername: false,
+				isErrorFirstName: false,
+				isErrorLastName: false,
+				isErrorEmail: false,
+				isErrorPassword: false,
+				isErrorConfirmPassword: false
+			},
+			methods: {
+				createNewAccount: function () {
+					var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+					var emailRe = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+					if (this.username.length < 8) {
+						this.isErrorUsername = true;
+						this.errorMessage = 'ERROR: Invalid Username';
+						this.isError = true;
+						return;
+					}
+					if (this.firstname.length < 1) {
+						this.isErrorFirstName = true;
+						this.errorMessage = 'ERROR: Empty First Name';
+						this.isError = true;
+						return;
+					}
+					if (this.lastname.length < 1) {
+						this.isErrorLastName = true;
+						this.errorMessage = 'ERROR: Empty Last Name';
+						this.isError = true;
+						return;
+					}
+					if (this.email.length < 1 || !emailRe.test(this.email)) {
+						this.isErrorEmail = true;
+						this.errorMessage = 'ERROR: Invalid E-mail';
+						this.isError = true;
+						return;
+					}
+					if (this.password.length < 8 || !re.test(this.password)) {
+						this.isErrorPassword = true;
+						this.errorMessage = 'ERROR: Invalid Password';
+						this.isError = true;
+						return;
+					}
+
+					if (this.password !== this.confirmpassword) {
+						this.isErrorConfirmPassword = true;
+						this.errorMessage = 'ERROR: Password and Confirm Password';
+						this.isError = true;
+						return;
+					}
+
+					this.isError = false;
+					var context = this
+					axios.post('/signin', {
+						username: context.username,
+						password: context.password,
+						firstname: context.firstname,
+						lastname: context.lastname,
+						email: context.email
+					}).then(function (response) {
+						if (response.data == 'success') {
+							window.location.replace('/login');
+						} else {
+							// console.log(response.data);
+							context.errorMessage = response.data;
+							context.isError = true;
+							return;
+						}
+					}).catch(function (error) {
+						console.log(error);
+					});
+				},
+				backToLogin: function () {
+					window.location.replace('/login');
+				}
+			}
+		});
+
+	</script>
+</body>
+
+</html>

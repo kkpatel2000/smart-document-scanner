@@ -1,0 +1,48 @@
+{
+  "doc": [
+    {
+      "name": "Std10 Markshit",
+      "mw": 179.0,
+      "mh": 205.0,
+      "x": 31.5,
+      "y": 9.0,
+      "w": 135.0,
+      "h": 7.0,
+      "f": "ગુજરાત માધ્યમિક અને ઉચ્ચતર માધ્યમિક શિક્ષણ બોર્ડ, ગાંધીનગર",
+      "char": "guj"
+    },
+    {
+      "name": "driving-licence",
+      "mw": 85.0,
+      "mh": 54.0,
+      "x": 18.5,
+      "y": 3.0,
+      "w": 47.0,
+      "h": 5.0,
+      "f": "UNION OF INDIA Driving Licence",
+      "char": "alpha"
+    },
+    {
+      "name": "ddu-id-card",
+      "mw": 85.0,
+      "mh": 54.0,
+      "x": 24.0,
+      "y": 4.0,
+      "w": 55.0,
+      "h": 4.5,
+      "f": "FACULTY OF TECHNOLOGY",
+      "char": "alpha"
+    },
+    {
+      "name": "pan-card",
+      "mw": 85.0,
+      "mh": 54.0,
+      "x": 3.0,
+      "y": 8.0,
+      "w": 38.0,
+      "h": 5.0,
+      "f": "INCOME TAX DEPARTMENT",
+      "char": "alpha"
+    }
+  ]
+}

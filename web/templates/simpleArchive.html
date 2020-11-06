@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Archive</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/ctable.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+</head>
+
+<body>
+    <div id="app">
+        <section>
+            <div class="container">
+                <h1 class="title" v-show="!isPrint">
+                    Show Archive
+                </h1>
+                <div class="buttons" v-show="!isPrint">
+                    <button class="button is-success" @click="getDocumentList()">
+                        <span class="icon material-icons">
+                            add_to_photos
+                        </span>
+                        <span>Add Document</span>
+                    </button>
+                    <button class="button is-warning" @click="printTable()">
+                        <span class="icon material-icons">
+                            print
+                        </span>
+                        <span>Print Table</span>
+                    </button>
+                    <button class="button is-primary" @click="saveTable()">
+                        <span class="icon material-icons">
+                            save
+                        </span>
+                        <span>Save Table</span>
+                    </button>
+                </div>
+                <progress class="progress is-primary" :value="progressPer" max="100" v-show="showProgress">{{ '{{' }}
+                    progressPer {{ '}}' }}%
+                </progress>
+                <ctable v-for="(val, index) in typeOfDoc" :title="val" :th-array="th[index]" :tr-array="tr[index]"
+                    :is-print="isPrint">
+                </ctable>
+            </div>
+        </section>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                typeOfDoc: [],
+                showProgress: false,
+                progressPer: 0,
+                th: [],
+                tr: [],
+                isPrint: false,
+            },
+            methods: {
+                getDocumentList: function () {
+                    var docList = [];
+                    axios
+                        .get('/createArchive/simple/getList')
+                        .then(response => {
+                            var context = this
+                            var docList = JSON.parse(response.data).docs;
+                            this.showProgress = true
+                            var count = 0
+                            docList.forEach(function (path, index) {
+                                axios
+                                    .get('/createArchive/simple/scan', {
+                                        params: {
+                                            img: path
+                                        }
+                                    }).then(response => {
+                                        responseJSON = JSON.parse(response.data);
+                                        console.log(responseJSON);
+                                        docTypeFromResponse = responseJSON.type;
+                                        var trIndex = context.typeOfDoc.length;
+                                        if (context.typeOfDoc.indexOf(docTypeFromResponse) == -1) {
+                                            var newTh = [];
+                                            var newTd = [];
+                                            for (dt in responseJSON.doc) {
+                                                newTh.push(responseJSON.doc[dt].field);
+                                                newTd.push(responseJSON.doc[dt].data);
+                                            }
+                                            context.tr.push([])
+                                            context.tr[trIndex].push(newTd);
+                                            context.th.push(newTh);
+                                            context.typeOfDoc.push(docTypeFromResponse);
+                                        } else {
+                                            var docIndex = context.typeOfDoc.indexOf(docTypeFromResponse);
+                                            var newTd = [];
+                                            for (dt in responseJSON.doc) {
+                                                newTd.push(responseJSON.doc[dt].data);
+                                            }
+                                            context.tr[docIndex].push(newTd);
+                                        }
+                                    }).catch(response => {
+                                        console.log(response);
+                                    }).finally(() => {
+                                        count += 1;
+                                        context.progressPer = Math.round((count / docList.length) * 100);
+                                        if (context.progressPer == 100) {
+                                            context.showProgress = false
+                                            context.progressPer = 0
+                                        }
+                                    });
+                            })
+                        }).catch(response => {
+                            console.log(response);
+                        })
+                },
+                printTable: function () {
+                    this.isPrint = true;
+                    var context = this
+                    setTimeout(function () {
+                        context.isPrint = false;
+                    }, (3 * 1000));
+                    setTimeout(function () {
+                        print();
+                    }, (1 * 1000));
+                },
+                saveTable: function () {
+                    var saveDoc = [];
+                    saveDoc.push(this.typeOfDoc);
+                    saveDoc.push(this.th);
+                    saveDoc.push(this.tr);
+                    axios.post(
+                        '/createArchive/save', {
+                        data: saveDoc
+                    }
+                    ).then(function (response) {
+                        if (response.data == 'success') {
+                            window.location.replace('/dashboard');
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                },
+            }
+        });
+    </script>
+</body>
+
+</html>

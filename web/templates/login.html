@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <title>Login</title>
+</head>
+
+<body>
+    <div id="app">
+        <section class="hero is-info">
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">
+                        Welcome to Smart Document Scanner
+                    </h1>
+                    <h2 class="subtitle">
+                        Log In to Your Account
+                    </h2>
+                </div>
+            </div>
+        </section>
+        <br>
+        <section>
+            <div class="container">
+                <h3 class="title">
+                    Log In
+                </h3>
+                <div class="field">
+                    <label class="label">Username</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" type="text" placeholder="Enter Username" spellcheck="false"
+                            v-model="username" v-bind:class="[isErrorUsername ? 'is-danger' : 'is-success']"
+                            @input="isErrorUsername = false">
+                        <span class="icon is-small is-left">
+                            <span class="material-icons">
+                                account_circle
+                            </span>
+                        </span>
+                    </div>
+                    <p class="help is-success" v-if="isErrorUsername">Username should be greater than 8 characters.</p>
+                </div>
+                <div class="field">
+                    <label class="label">Password</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" type="password" placeholder="Enter Password" v-model="password"
+                            v-bind:class="[isErrorPassword ? 'is-danger' : 'is-success']"
+                            @input="isErrorPassword = false">
+                        <span class="icon is-small is-left">
+                            <span class="material-icons">
+                                lock
+                            </span>
+                        </span>
+                    </div>
+                    <p class="help is-success" v-if="isErrorPassword">Password must contain min 8 characters including
+                        one digit, capital alphabet, symbol.</p>
+                </div>
+                <div class="buttons">
+                    <button class="button is-link" @click="login()">Log In</button>
+                    <button class="button is-link is-outlined" @click="createNewAccount()">Create New Account</button>
+                </div>
+                <div class="notification is-danger is-light" v-if="isError">
+                    <button class="delete" @click='isError = false'></button>
+                    {{ '{{' }} errorMessage {{ '}}' }}
+                </div>
+            </div>
+        </section>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                username: '',
+                password: '',
+                errorMessage: 'Error',
+                isError: false,
+                isErrorUsername: false,
+                isErrorPassword: false
+            },
+            methods: {
+                login: function () {
+                    var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+                    if (this.username.length < 8) {
+                        this.isErrorUsername = true;
+                        this.errorMessage = 'ERROR: Invalid Username';
+                        this.isError = true;
+                        return;
+                    }
+                    if (this.password.length < 8 || !re.test(this.password)) {
+                        this.isErrorPassword = true;
+                        this.errorMessage = 'ERROR: Invalid Password';
+                        this.isError = true;
+                        return;
+                    }
+                    this.isError = false;
+                    var context = this
+                    axios.post('/login', {
+                        username: context.username,
+                        password: context.password
+                    }).then(function (response) {
+                        if (response.data == 'success') {
+                            window.location.replace('/dashboard');
+                        } else {
+                            // console.log(response.data);
+                            context.errorMessage = response.data;
+                            context.isError = true;
+                            return;
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                },
+                createNewAccount: function () {
+                    window.location.replace('/signin');
+                }
+            }
+        });
+
+    </script>
+</body>
+
+</html>

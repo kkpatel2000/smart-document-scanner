@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <title>Create Archive</title>
+</head>
+
+<body>
+    <div id="app">
+        <section>
+            <div class="container">
+                <h1 class="title">
+                    Create New Archive
+                </h1>
+                <div class="field">
+                    <label class="label">Archive Name</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" type="text" placeholder="Enter Archive Name" v-model="name"
+                            v-bind:class="[isErrorName ? 'is-danger' : 'is-success']" @input="isErrorName = false">
+                        <span class="icon is-small is-left">
+                            <span class="material-icons">
+                                folder
+                            </span>
+                        </span>
+                    </div>
+                    <p class="help is-success" v-if="isErrorName">Archive Name should unique and not empty.</p>
+                </div>
+
+                <div class="field">
+                    <label class="label">Archive Type</label>
+                    <div class="control">
+                        <div class="select is-info">
+                            <select v-model="selected" @input="isSelectedError = false">
+                                <option value="empty">Please select one</option>
+                                <option value="simple">Simple</option>
+                                <option value="custom">Custom</option>
+                                <option value="single">Single</option>
+                                <option value="constraint">Constraint</option>
+                                <option value="find">Find</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p class="help is-success" v-if="isSelectedError">Select archive type.</p>
+                </div>
+                <article class="message is-info" v-show="selected == 'simple'">
+                    <div class="message-body">
+                        <strong>Simple Archive Type</strong><br>
+                        Goood for scanning documents with taking all possibilities.
+                    </div>
+                </article>
+                <article class="message is-info" v-show="selected == 'custom'">
+                    <div class="message-body">
+                        <strong>Custom Archive Type</strong><br>
+                        Goood for scanning only selection of documents.
+                    </div>
+                </article>
+                <article class="message is-info" v-show="selected == 'single'">
+                    <div class="message-body">
+                        <strong>Single Archive Type</strong><br>
+                        Goood for scanning only single type of document with better representation.
+                    </div>
+                </article>
+                <article class="message is-info" v-show="selected == 'constraint'">
+                    <div class="message-body">
+                        <strong>Constraint Archive Type</strong><br>
+                        Goood for scanning documents if it pass the constraint criteria.
+                    </div>
+                </article>
+                <article class="message is-info" v-show="selected == 'find'">
+                    <div class="message-body">
+                        <strong>Find Archive Type</strong><br>
+                        Goood for scanning and finding documents.
+                    </div>
+                </article>
+
+                <div class="buttons">
+                    <button class="button is-success" @click="createNewArchive()">
+                        <span class="icon material-icons">
+                            create_new_folder
+                        </span>
+                        <span>Create New Archive</span>
+                    </button>
+                </div>
+
+                <div class="notification is-danger is-light" v-if="isError">
+                    <button class="delete" @click='isError = false'></button>
+                    {{ '{{' }} errorMessage {{ '}}' }}
+                </div>
+            </div>
+        </section>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                errorMessage: '',
+                name: '',
+                selected: 'empty',
+                isErrorName: false,
+                isSelectedError: false,
+                isError: false
+            },
+            methods: {
+                createNewArchive: function () {
+                    if (this.name.length < 1) {
+                        this.isErrorName = true;
+                        this.errorMessage = 'ERROR: Archive Name is empty.';
+                        this.isError = true;
+                        return;
+                    }
+                    if (this.selected === 'empty') {
+                        this.isSelectedError = true;
+                        this.errorMessage = 'ERROR: Archive Type is not selected.';
+                        this.isError = true;
+                        return;
+                    }
+                    var context = this
+                    axios
+                        .get('/createArchive/create', {
+                            params: {
+                                name: context.name,
+                                selected: context.selected
+                            }
+                        })
+                        .then(response => {
+                            if (response.data == 'success') {
+                                window.location.replace('/createArchive/simple');
+                            }
+                            else {
+                                context.errorMessage = response.data;
+                                context.isError = true;
+                            }
+                        })
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
