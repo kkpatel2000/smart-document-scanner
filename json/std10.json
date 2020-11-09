@@ -1,26 +1,28 @@
 {
-  "type": "Std10 Markshit",
+  "type": "Standard 10th Marksheet Gujarat Board",
   "w": 179.0,
   "h": 205.0,
   "data": [
     {
-      "name": "SEAT NO.",
+      "name": "Seat No",
       "x": 13.0,
       "y": 45.5,
       "w": 20.0,
       "h": 5.0,
-      "char": "[^C0-9]+"
+      "char": "[^C0-9]+",
+      "thresh": 50
     },
     {
-      "name": "CANDIDATE'S NAME",
+      "name": "Candidate's Name",
       "x": 40.0,
       "y": 45.5,
       "w": 70.0,
       "h": 5.0,
-      "char": "[^A-Z ]+"
+      "char": "[^A-Z ]+",
+      "thresh": 50
     },
     {
-      "name": "SR. NO. OF STATEMENT",
+      "name": "Sr. No. Of Statement",
       "x": 147.0,
       "y": 45.5,
       "w": 17.0,
@@ -29,7 +31,7 @@
       "thresh": 50
     },
     {
-      "name": "GRADE",
+      "name": "Grade",
       "x": 140.5,
       "y": 154.0,
       "w": 28.0,

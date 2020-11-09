@@ -1,7 +1,7 @@
 {
   "doc": [
     {
-      "name": "Std10 Markshit",
+      "name": "Standard 10th Marksheet Gujarat Board",
       "mw": 179.0,
       "mh": 205.0,
       "x": 31.5,
@@ -10,9 +10,10 @@
       "h": 7.0,
       "f": "ગુજરાત માધ્યમિક અને ઉચ્ચતર માધ્યમિક શિક્ષણ બોર્ડ, ગાંધીનગર",
       "char": "guj"
+
     },
     {
-      "name": "driving-licence",
+      "name": "Driving Licence Of Indian Citizens",
       "mw": 85.0,
       "mh": 54.0,
       "x": 18.5,
@@ -23,7 +24,7 @@
       "char": "alpha"
     },
     {
-      "name": "ddu-id-card",
+      "name": "Dharmsinh Desai University ID Card",
       "mw": 85.0,
       "mh": 54.0,
       "x": 24.0,
@@ -34,7 +35,7 @@
       "char": "alpha"
     },
     {
-      "name": "pan-card",
+      "name": "PAN Card Of Indian Citizens",
       "mw": 85.0,
       "mh": 54.0,
       "x": 3.0,

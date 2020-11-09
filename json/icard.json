@@ -1,55 +1,43 @@
 {
-  "type": "dduicard",
+  "type": "Dharmsinh Desai University ID Card",
   "w": 85.0,
   "h": 54.0,
-  "identifier": [
-    {
-      "f": "FACULTY OF TECHNOLOGY",
-      "x": 24.0,
-      "y": 4.0,
-      "w": 55.0,
-      "h": 4.5
-    },
-    {
-      "f": "GOVT. OF INDIA",
-      "x": 18.0,
-      "y": 8.0,
-      "w": 60.0,
-      "h": 5.0
-    }
-  ],
   "data": [
     {
-      "name": "name",
+      "name": "Name",
       "x": 20.0,
       "y": 23.0,
       "w": 60.0,
       "h": 5.0,
-      "char": "[^a-zA-Z ]+"
+      "char": "[^a-zA-Z ]+",
+      "thresh": 50
     },
     {
-      "name": "branch",
+      "name": "Branch",
       "x": 20.0,
       "y": 28.0,
       "w": 60.0,
       "h": 5.0,
-      "char": "[^a-zA-Z- '.']+"
+      "char": "[^a-zA-Z- '.']+",
+      "thresh": 50
     },
     {
-      "name": "dateOfIssue",
+      "name": "Date Of Issue",
       "x": 20.0,
       "y": 33.0,
       "w": 40.0,
       "h": 6,
-      "char": "[^a-zA-Z0-9- '.'':']+"
+      "char": "[^a-zA-Z0-9- '.'':']+",
+      "thresh": 50
     },
     {
-      "name": "id",
+      "name": "ID",
       "x": 33.5,
       "y": 47,
       "w": 20.0,
       "h": 5.0,
-      "char": "[^a-zA-Z0-9 ]+"
+      "char": "[^a-zA-Z0-9 ]+",
+      "thresh": 50
     }
 
   ]

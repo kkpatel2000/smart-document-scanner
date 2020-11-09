@@ -1,55 +1,43 @@
 {
-  "type": "pancard",
+  "type": "PAN Card Of Indian Citizens",
   "w": 85.0,
   "h": 54.0,
-  "identifier": [
-    {
-      "f": "INCOME TAX DEPARTMENT",
-      "x": 2.0,
-      "y": 6.0,
-      "w": 38.0,
-      "h": 5.0
-    },
-    {
-      "f": "GOVT. OF INDIA",
-      "x": 55.0,
-      "y": 6.0,
-      "w": 35.0,
-      "h": 5.0
-    }
-  ],
   "data": [
     {
-      "name": "panNo",
+      "name": "Pan No",
       "x": 29.0,
       "y": 21.0,
       "w": 28.0,
       "h": 6.0,
-      "char": "[^0-9A-Z]+"
+      "char": "[^0-9A-Z]+",
+      "thresh": 50
     },
     {
-      "name": "name",
+      "name": "Name",
       "x": 3.5,
       "y": 28.5,
       "w": 43.0,
       "h": 5.0,
-      "char": "[^A-Z ]+"
+      "char": "[^A-Z ]+",
+      "thresh": 50
     },
     {
-      "name": "fatherName",
+      "name": "Father Name",
       "x": 3.8,
       "y": 37,
       "w": 43.0,
       "h": 5.5,
-      "char": "[^A-Z ]+"
+      "char": "[^A-Z ]+",
+      "thresh": 50
     },
     {
-      "name": "DateOfBirth",
+      "name": "Date Of Birth",
       "x": 3.8,
       "y": 45.0,
       "w": 20.0,
       "h": 5.0,
-      "char": "[^0-9/]+"
+      "char": "[^0-9/]+",
+      "thresh": 50
     }
   ]
 }

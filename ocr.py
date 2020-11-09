@@ -8,6 +8,7 @@ from difflib import SequenceMatcher
 import os
 from pytesseract import Output
 
+# formula for finding distance between two point
 def lDist(x1, y1, x2, y2):
     dist = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
     return dist
@@ -16,7 +17,7 @@ def lDist(x1, y1, x2, y2):
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
-
+# Core logic behind data recognition from image
 class OCR:
     resultPath = './temp/result.jpeg'
 
@@ -24,22 +25,33 @@ class OCR:
         pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
         super().__init__()
 
+    # crop the document from image
     def cropImage(self, path):
         image = cv2.imread(path, -1)
         if image is None:
             print('no image found')
             return
         org = image.copy()
+
+        # resize the document to 300x300 for better and faster croping
+        # derive from testing
         image = cv2.resize(image, (300, 300))
         HEIGHT, WIDTH, _ = org.shape
 
         # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # gray = cv2.GaussianBlur(image, (5, 5), 0)
+
+        # detect the outer border of document
         edged = cv2.Canny(image, 75, 200)
+
+        # fill the documnet portion with white for removing noise
         kernel = np.ones((30, 30), np.uint8)
         closing = cv2.morphologyEx(edged, cv2.MORPH_CLOSE, kernel)
+
+        # detect the edge again
         edges = cv2.Canny(closing, 100, 200)
 
+        # retriving coordinates of edge for further finding corners of document
         (contours, _) = cv2.findContours(
             edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
@@ -55,6 +67,7 @@ class OCR:
         bottomRightX = 0
         bottomRightY = 0
 
+        # by finding minimum distance between all four image corners from to the edge points in order to find coordinates of document corners
         for contour in contours:
             for c in contour:
                 list_of_c = list(c)
@@ -100,6 +113,8 @@ class OCR:
         tPoints = np.array(
             [[0, 0], [WIDTH - 1, 0], [WIDTH - 1, HEIGHT - 1], [0, HEIGHT - 1]], np.float32)
 
+
+        # transfoming image to crop image
         M = cv2.getPerspectiveTransform(sPoints, tPoints)
         newImage = cv2.warpPerspective(org, M, (WIDTH, HEIGHT))
 
@@ -115,12 +130,14 @@ class OCR:
         cv2.imwrite(OCR.resultPath, newImage)
         print('crop done')
 
+    # detecting which type of documnet it is
     def detect(self, json_path, path=None):
         if path is None:
             path = OCR.resultPath
         img = cv2.imread(path)
         h, w, _ = img.shape
 
+        # load JSON file which contains coordinates of document data which help to identify document type
         detectJSON = json.load(open(json_path))
 
         for doc in detectJSON['doc']:
@@ -132,7 +149,9 @@ class OCR:
             cw = int(doc['h'] * mulH)
             ch = int(doc['w'] * mulW)
 
+            # crop that particular portion
             cropImg = img[cx:cx + cw:, cy:cy + ch]
+            # use pytesseract (OCR) to recognize data from crop portion  
             data = pytesseract.image_to_string(cropImg, lang='eng+guj')
             # print(data)
             # cv2.imshow("Test", cropImg)
@@ -141,12 +160,16 @@ class OCR:
 
             print(data)
             if doc['char'] == 'alpha':
+                # remove unwanted charterers which are misinterpreted by OCR
                 refineData = re.sub('[^a-zA-Z ]+', '', data)
+                # find the percentage of data mached with orginal data in detect JSON file
                 per = similar(refineData.lower(), doc['f'].lower())
+                # allow if it more then 80%
                 if per > 0.8:
                     print('Document type is : ', doc['name'])
                     print(refineData)
                     return doc['name']
+                # support gujarati also
             elif doc['char'] == 'guj':
                 per = similar(data, doc['f'].lower())
                 if per > 0.8:
@@ -154,10 +177,12 @@ class OCR:
                     print(data)
                     return doc['name']
 
+    # after identification of document type next step is find all data from document
     def dataFind(self, json_path, image_path=None):
         if image_path is None:
             image_path = OCR.resultPath
 
+        # load document JSON file for coordinates of all datafields
         doc = json.load(open(json_path))
         img = cv2.imread(image_path)
 
@@ -181,6 +206,7 @@ class OCR:
             dataOCR = pytesseract.image_to_string(cropImg)
             refineData = re.sub(data['char'], '', dataOCR)
             if len(refineData) < 4:
+                # if OCR fails to recognize data apply thrashing on image to make it easy for OCR
                 frame = cv2.GaussianBlur(cropImg, (0, 0), 3)
                 grayCrop = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 ret, thresh1 = cv2.threshold(
@@ -199,6 +225,11 @@ class OCR:
 
         return dictData
 
+    # "aadhaar card" what is aadhaar ?  refer this : [https://en.wikipedia.org/wiki/Aadhaar]
+    # Due not so good quality aadhaar card many pepole use lamination on it
+    # which cause failer of edge detection algo so overcome this in this special case we apply this method
+    # scan as much as data from raw image using OCR then after refine those data to get result
+    # clearly not optimal approach
     def aadhar(self, path=None):
         if path is None:
             path = OCR.resultPath
@@ -293,18 +324,18 @@ class OCR:
         dictData = None
         if flag:
             dictData = {
-                'type': 'Aadhar',
+                'type': 'Aadhaar Card Of Indian Citizens',
                 'doc': [
                     {
-                        'field': 'Name-english',
+                        'field': 'Name (english)',
                         'data': nameEng.strip()
                     },
                     {
-                        'field': 'Name-gujarati',
+                        'field': 'Name (gujarati)',
                         'data': name.strip()
                     },
                     {
-                        'field': 'gender',
+                        'field': 'Gender',
                         'data': gender
                     },
                     {

@@ -1,7 +1,11 @@
 from peewee import *
 import datetime
+import os
 
 from peewee import BackrefAccessor
+
+if os.path.isdir('./database') == False:
+    os.mkdir('./database')
 
 database = SqliteDatabase('./database/test.db')
 
@@ -10,7 +14,7 @@ class BaseModel(Model):
     class Meta:
         database = database
 
-
+# User Model
 class User(BaseModel):
     userId = IntegerField(primary_key=True)
     username = CharField(unique=True)
@@ -19,7 +23,7 @@ class User(BaseModel):
     lastName = CharField()
     email = CharField()
 
-
+# UserArchive Model
 class UserArchive(BaseModel):
     archiveId = IntegerField(primary_key=True)
     archiveName = CharField(unique=True)
@@ -27,7 +31,8 @@ class UserArchive(BaseModel):
     lastUpdateTime = DateTimeField()
     typeOfArchive = CharField()
     userId = ForeignKeyField(User, backref='archives')
-
+    
+# ListOfArchive Model
 class ListOfArchive(BaseModel):
     listOfArchiveId = IntegerField(primary_key=True)
     archiveData = CharField()
@@ -140,7 +145,3 @@ class Database:
 
 db = Database()
 db.createDatabase()
-# db.saveDocTable('haha')
-# db.createArchive('test4', datetime.datetime.now(), datetime.datetime.now(), 'simple', User.select()[1], 'haha')
-# print('done')
-# db.getArchiveByName('sameep')

@@ -1,6 +1,6 @@
 from sultan.api import Sultan
 
-
+# Open file selection dialog
 class FileManager:
     def __init__(self):
         super().__init__()

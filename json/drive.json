@@ -1,23 +1,7 @@
 {
-  "type": "drivingLicence",
+  "type": "Driving Licence Of Indian Citizens",
   "w": 85.0,
   "h": 54.0,
-  "identifier": [
-    {
-      "f": "UNION OF INDIA Driving Licence",
-      "x": 18.5,
-      "y": 3.0,
-      "w": 47.0,
-      "h": 5.0
-    },
-    {
-      "f": "GUJARAT STATE",
-      "x": 19.0,
-      "y": 7.8,
-      "w": 21.0,
-      "h": 2.8
-    }
-  ],
   "data": [
     {
       "name": "Date of First Issue",
@@ -25,7 +9,8 @@
       "y": 19.5,
       "w": 14.0,
       "h": 3.0,
-      "char": "[^0-9-]+"
+      "char": "[^0-9-]+",
+      "thresh": 50
     },
     {
       "name": "Validity",
@@ -33,15 +18,18 @@
       "y": 19.5,
       "w": 14.0,
       "h": 3.0,
-      "char": "[^0-9-]+"
+      "char": "[^0-9-]+",
+      "thresh": 50
     },
     {
-      "name": "DateOfBirth",
+      "name": "Date Of Birth",
       "x": 24.0,
       "y": 28.9,
       "w": 14.0,
       "h": 3.0,
-       "char": "[^0-9-]+"
+      "char": "[^0-9-]+",
+      "thresh": 50
+       
     },
     {
       "name": "Name",
@@ -58,7 +46,8 @@
       "y": 47.0,
       "w": 50.0,
       "h": 5.0,
-      "char": "[^a-zA-Z ]"
+      "char": "[^a-zA-Z ]",
+      "thresh": 50
     }
   ]
 }

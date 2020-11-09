@@ -1,6 +1,7 @@
 import datetime
 import json
 
+# Model to JSON for arhcive list of particular user
 def archiveListJSON(archiveList):
     jsonDict = {
         'archiveList': []
